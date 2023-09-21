@@ -16,19 +16,18 @@ const Actors = db.Actor;
 const moviesController = {
     'list': async (req, res) => {
         const movies = await db.Movie.findAll({
-            include: [ "genre" ]
+            include: [ "genre", "actors" ]
         })
-
-        // res.json(movies[1].genre.name)
 
         res.render('moviesList.ejs', {movies})
 
     },
-    'detail': (req, res) => {
-        db.Movie.findByPk(req.params.id)
-            .then(movie => {
-                res.render('moviesDetail.ejs', {movie});
-            });
+    'detail': async (req, res) => {
+        const movie = await db.Movie.findByPk(req.params.id)
+        res.render('moviesDetail.ejs', {movie});
+
+            // .then(movie => {
+            // });
     },
     'new': (req, res) => {
         db.Movie.findAll({

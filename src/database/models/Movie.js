@@ -1,7 +1,8 @@
 /**
  * 
  * @param {import('sequelize').Sequelize} sequelize 
- * @param {import('sequelize/types').DataType} dataTypes 
+ * @param {import('sequelize/types').Sequelize} dataTypes 
+ * @returns 
  */
 
 module.exports = (sequelize, dataTypes) => {
@@ -40,7 +41,8 @@ module.exports = (sequelize, dataTypes) => {
         updatedAt: 'updated_at',
         deletedAt: false
     }
-    const Movie = sequelize.define(alias,cols,config);
+    // const Movie = sequelize.define(alias,cols,config);
+    const Movie = sequelize.define(alias, cols, config)
 
     //Aquí debes realizar lo necesario para crear las relaciones con los otros modelos (Genre - Actor)
     Movie.associate = ( models ) =>{
@@ -48,11 +50,12 @@ module.exports = (sequelize, dataTypes) => {
             as: "genre",
             foreignKey: "genre_id"
         } );
+        
 
         Movie.belongsToMany(  models.Actor, {
             as: "actors",
             through: "actor_movie",
-            foreignKey: "movies_id",
+            foreignKey: "movie_id",
             otherKey: "actor_id"
         })
     }
