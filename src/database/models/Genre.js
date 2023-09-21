@@ -1,4 +1,8 @@
-// const { TINYINT, INTEGER } = require("sequelize/types");
+/**
+ * 
+ * @param {import('sequelize').Sequelize} sequelize 
+ * @param {import('sequelize/types').DataType} dataTypes 
+ */
 
 module.exports = (sequelize, dataTypes) => {
     let alias = 'Genre';
@@ -33,6 +37,12 @@ module.exports = (sequelize, dataTypes) => {
     const Genre = sequelize.define(alias, cols, config);
 
     //Aquí debes realizar lo necesario para crear las relaciones con el modelo (Movie)
+    Genre.associate = ( models ) =>{
+        Genre.hasMany( models.Movie,{
+            as:  "movie",
+            foreignKey: "genre_id"
+        })
+    }
 
     return Genre
 };

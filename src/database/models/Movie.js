@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {import('sequelize').Sequelize} sequelize 
+ * @param {import('sequelize/types').DataType} dataTypes 
+ */
+
 module.exports = (sequelize, dataTypes) => {
     let alias = 'Movie'; // esto debería estar en singular
     let cols = {
@@ -37,6 +43,19 @@ module.exports = (sequelize, dataTypes) => {
     const Movie = sequelize.define(alias,cols,config);
 
     //Aquí debes realizar lo necesario para crear las relaciones con los otros modelos (Genre - Actor)
+    Movie.associate = ( models ) =>{
+        Movie.belongsTo( models.Genre, {
+            as: "genre",
+            foreignKey: "genre_id"
+        } );
+
+        Movie.belongsToMany(  models.Actor, {
+            as: "actors",
+            through: "actor_movie",
+            foreignKey: "movies_id",
+            otherKey: "actor_id"
+        })
+    }
 
     return Movie
 };

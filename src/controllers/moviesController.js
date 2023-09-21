@@ -14,11 +14,15 @@ const Actors = db.Actor;
 
 
 const moviesController = {
-    'list': (req, res) => {
-        db.Movie.findAll()
-            .then(movies => {
-                res.render('moviesList.ejs', {movies})
-            })
+    'list': async (req, res) => {
+        const movies = await db.Movie.findAll({
+            include: [ "genre" ]
+        })
+
+        // res.json(movies[1].genre.name)
+
+        res.render('moviesList.ejs', {movies})
+
     },
     'detail': (req, res) => {
         db.Movie.findByPk(req.params.id)
@@ -51,23 +55,46 @@ const moviesController = {
             });
     },
     //Aqui dispongo las rutas para trabajar con el CRUD
-    add: function (req, res) {
+    add: async (req, res) => {
+        const allGenres = await db.Genre.findAll({});
+
+        res.render('moviesAdd', {
+            allGenres
+        })
         
     },
-    create: function (req,res) {
+    create: async (req,res) => {
+        await db.Movie.create( req.body );
+
+        res.redirect('/movies')
 
     },
-    edit: function(req,res) {
+    edit: async (req,res) => {
+        const Movie = await db.Movie.findByPk(req.params.id);
 
+        const allGenres = await db.Genre.findAll();
+
+        res.render('moviesEdit', {
+            Movie,
+            allGenres
+        })
     },
-    update: function (req,res) {
+    update: async (req,res) => {
+        await db.Movie.update(req.body, { where: { id: req.params.id }});
 
+        res.redirect('/movies')
     },
-    delete: function (req,res) {
+    delete: async (req,res) => {
+        const deleteMovie = await db.Movie.findByPk(req.params.id);
 
+        res.render('moviesDelete', {
+            Movie: deleteMovie,
+        })
     },
-    destroy: function (req,res) {
+    destroy: async (req,res) => {
+        await db.Movie.destroy({ where: { id: req.params.id }});
 
+        res.redirect('/movies')
     }
 }
 
